@@ -1,6 +1,7 @@
 import Foundation
 import UserNotifications
 import Combine
+import AVFoundation
 
 class TimerManager: ObservableObject {
     enum TimerMode {
@@ -9,10 +10,11 @@ class TimerManager: ObservableObject {
     }
     
     @Published var currentMode: TimerMode = .work
-    @Published var workTime: Int = 25 * 60
+    @Published var workTime: Int = 1 * 5
     @Published var breakTime: Int = 5 * 60
     @Published var isRunning: Bool = false
     @Published var elapsedSeconds: Int = 0
+    private var audioPlayer: AVAudioPlayer?
     
     private var timer: AnyCancellable?
     
@@ -41,10 +43,11 @@ class TimerManager: ObservableObject {
     }
     
     
-    
     func stop() {
         timer?.cancel()
         timer = nil
+        menuBarUpdateTimer?.cancel()  // Clean up menu bar timer
+        menuBarUpdateTimer = nil
         isRunning = false
     }
     
@@ -77,6 +80,7 @@ class TimerManager: ObservableObject {
         let title = currentMode == .work ? "Study Time!" : "Break Time!"
         let message = currentMode == .work ? "25 minutes focus" : "5 minutes rest"
         
+        // Send macOS notification
         let content = UNMutableNotificationContent()
         content.title = title
         content.body = message
@@ -90,6 +94,32 @@ class TimerManager: ObservableObject {
         )
         
         UNUserNotificationCenter.current().add(request)
+        
+        // Play bell sound
+        playBellSound()
+    }
+
+    private func playBellSound() {
+        // Option A: If you added file to project (not Assets.xcassets)
+        guard let soundURL = Bundle.main.url(forResource: "bell", withExtension: "mp3") else {
+            // Try with capital MP3
+            guard let soundURL2 = Bundle.main.url(forResource: "bell", withExtension: "MP3") else {
+                print("Could not find bell.mp3 in bundle")
+                return
+            }
+            playURL(soundURL2)
+            return
+        }
+        playURL(soundURL)
+    }
+
+    private func playURL(_ url: URL) {
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: url)
+            audioPlayer?.play()
+        } catch {
+            print("Error playing sound: \(error)")
+        }
     }
     
     var menuBarText: String {
