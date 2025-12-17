@@ -12,9 +12,12 @@ struct ContentView: View {
     
     var body: some View {
         VStack(spacing: 20) {
+            Text("\(timerManager.currentTimeRemaining)")
+                            .hidden()
+            
             // Mode indicator
             HStack {
-                Text(timerManager.currentMode == .work ? "WORK TIME" : "BREAK TIME")
+                Text(timerManager.currentMode == .work ? "STUDY TIME" : "BREAK TIME")
                     .font(.headline)
                     .foregroundColor(timerManager.currentMode == .work ? .green : .blue)
                 
@@ -29,7 +32,6 @@ struct ContentView: View {
             Divider()
             
             // Timer display
-            Text(timeString(from: timerManager.currentTimeRemaining))
                 .font(.system(size: 48, weight: .bold))
                 .monospacedDigit()
                 .foregroundColor(timerManager.currentMode == .work ? .green : .blue)
@@ -56,7 +58,7 @@ struct ContentView: View {
             // Time settings
             VStack(spacing: 15) {
                 HStack {
-                    Text("Work Time:")
+                    Text("Study Time:")
                     Picker("", selection: Binding(
                         get: { timerManager.workTime / 60 },
                         set: { timerManager.setWorkTime(minutes: $0) }
@@ -85,7 +87,7 @@ struct ContentView: View {
             Divider()
             
             // Quick action
-            Button("🔁 Switch to \(timerManager.currentMode == .work ? "Break" : "Work")") {
+            Button("🔁 Switch to \(timerManager.currentMode == .work ? "Break" : "Study")") {
                 timerManager.switchMode()
             }
             

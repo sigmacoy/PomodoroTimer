@@ -1,11 +1,6 @@
-//
-//  TimeManager.swift
-//  PomodoroTimer
-//
-//  Created by Mc Cauley Bacalla on 12/18/25.
-//
-
 import Foundation
+import UserNotifications
+import Combine
 
 class TimerManager: ObservableObject {
     enum TimerMode {
@@ -14,86 +9,115 @@ class TimerManager: ObservableObject {
     }
     
     @Published var currentMode: TimerMode = .work
-    @Published var workTime = 25 * 60
-    @Published var breakTime = 5 * 60
-    @Published var isRunning = false
-    @Published var currentTimeRemaining: Int = 25 * 60
+    @Published var workTime: Int = 25 * 60
+    @Published var breakTime: Int = 5 * 60
+    @Published var isRunning: Bool = false
+    @Published var elapsedSeconds: Int = 0
     
-    private var timer: Timer?
+    private var timer: AnyCancellable?
     
-    init() {
-        currentTimeRemaining = workTime
+    var currentTimeRemaining: Int {
+        let total = currentMode == .work ? workTime : breakTime
+        return max(0, total - elapsedSeconds)
     }
+    
     
     func start() {
+        guard !isRunning else { return }
         isRunning = true
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-            if self.currentTimeRemaining > 0 {
-                self.currentTimeRemaining -= 1
-            } else {
-                self.switchMode()
+//        print("Timer started. currentTimeRemaining: \(currentTimeRemaining)")
+        
+        timer = Timer.publish(every: 1, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                self.elapsedSeconds += 1
+//                print("Tick! elapsedSeconds: \(self.elapsedSeconds), remaining: \(self.currentTimeRemaining)")
+                
+                if self.currentTimeRemaining <= 0 {
+                    self.switchMode()
+                }
             }
-        }
     }
     
+    
+    
     func stop() {
-        timer?.invalidate()
+        timer?.cancel()
         timer = nil
         isRunning = false
     }
     
     func switchMode() {
         stop()
+        elapsedSeconds = 0
         
-        if currentMode == .work {
-            currentMode = .breakTime
-            currentTimeRemaining = breakTime
-            // Notify: Break time
-            sendNotification(title: "Break Time!", message: "5 minutes rest")
-        } else {
-            currentMode = .work
-            currentTimeRemaining = workTime
-            // Notify: Work time
-            sendNotification(title: "Work Time!", message: "25 minutes focus")
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.start()
-        }
+        currentMode = (currentMode == .work) ? .breakTime : .work
+        sendNotification()
+        start()
     }
     
     func reset() {
         stop()
+        elapsedSeconds = 0
         currentMode = .work
-        currentTimeRemaining = workTime
     }
     
     func setWorkTime(minutes: Int) {
         workTime = minutes * 60
-        if currentMode == .work && !isRunning {
-            currentTimeRemaining = workTime
-        }
+        if currentMode == .work { elapsedSeconds = 0 }
     }
     
     func setBreakTime(minutes: Int) {
         breakTime = minutes * 60
-        if currentMode == .breakTime && !isRunning {
-            currentTimeRemaining = breakTime
-        }
+        if currentMode == .breakTime { elapsedSeconds = 0 }
     }
     
-    private func sendNotification(title: String, message: String) {
-        let notification = NSUserNotification()
-        notification.title = title
-        notification.informativeText = message
-        notification.soundName = NSUserNotificationDefaultSoundName
-        NSUserNotificationCenter.default.deliver(notification)
+    private func sendNotification() {
+        let title = currentMode == .work ? "Study Time!" : "Break Time!"
+        let message = currentMode == .work ? "25 minutes focus" : "5 minutes rest"
+        
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = message
+        content.sound = .default
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
+        let request = UNNotificationRequest(
+            identifier: UUID().uuidString,
+            content: content,
+            trigger: trigger
+        )
+        
+        UNUserNotificationCenter.current().add(request)
     }
     
     var menuBarText: String {
-        let modeSymbol = currentMode == .work ? "👨‍💻" : "☕️"
         let minutes = currentTimeRemaining / 60
         let seconds = currentTimeRemaining % 60
-        return "\(modeSymbol) \(String(format: "%02d:%02d", minutes, seconds))"
+        let text = String(format: "%02d:%02d", minutes, seconds)
+//        print("menuBarText updating to: \(text)")
+        return text
+    }
+    
+    @Published var menuBarTimeString: String = "25:00"
+
+    private func updateMenuBarText() {
+        let minutes = currentTimeRemaining / 60
+        let seconds = currentTimeRemaining % 60
+        menuBarTimeString = String(format: "%02d:%02d", minutes, seconds)
+    }
+    
+    private var menuBarUpdateTimer: AnyCancellable?
+
+    func startMenuBarUpdates() {
+        // Update menu bar text every 0.5 seconds for smoother display
+        menuBarUpdateTimer = Timer.publish(every: 0.5, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                // This will trigger the menu bar to update
+                self.objectWillChange.send()
+            }
     }
 }
