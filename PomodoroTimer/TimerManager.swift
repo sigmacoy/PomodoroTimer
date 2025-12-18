@@ -10,7 +10,7 @@ class TimerManager: ObservableObject {
     }
     
     @Published var currentMode: TimerMode = .work
-    @Published var workTime: Int = 1 * 5
+    @Published var workTime: Int = 25 * 60
     @Published var breakTime: Int = 5 * 60
     @Published var isRunning: Bool = false
     @Published var elapsedSeconds: Int = 0
