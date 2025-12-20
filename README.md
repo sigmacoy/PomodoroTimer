@@ -79,7 +79,7 @@ Built with:
 
 ```
 PomodoroTimer/
-├── PomodoroTimerApp.swift    # App entry point & AppDelegate
+├── PomodoroTimerApp.swift     # App entry point & AppDelegate
 ├── ContentView.swift          # Main UI
 ├── TimerManager.swift         # Timer logic & state management
 ├── Assets.xcassets/           # App icons and assets
