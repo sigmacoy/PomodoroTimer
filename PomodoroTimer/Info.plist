@@ -1,2 +1,4 @@
 <key>LSUIElement</key>
-<string>1</string>
+<true/>
+<key>LSBackgroundOnly</key>
+<false/>

@@ -2,6 +2,7 @@ import Foundation
 import UserNotifications
 import Combine
 import AVFoundation
+import AppKit
 
 class TimerManager: ObservableObject {
     enum TimerMode {
@@ -75,7 +76,7 @@ class TimerManager: ObservableObject {
         breakTime = minutes * 60
         if currentMode == .breakTime { elapsedSeconds = 0 }
     }
-    
+        
     private func sendNotification() {
         let title = currentMode == .work ? "Study Time!" : "Break Time!"
         let message = currentMode == .work ? "25 minutes focus" : "5 minutes rest"
@@ -93,7 +94,12 @@ class TimerManager: ObservableObject {
             trigger: trigger
         )
         
-        UNUserNotificationCenter.current().add(request)
+        UNUserNotificationCenter.current().add(request) { _ in
+            // Force hide dock icon after notification
+            DispatchQueue.main.async {
+                NSApp.setActivationPolicy(.accessory)
+            }
+        }
         
         // Play bell sound
         playBellSound()
