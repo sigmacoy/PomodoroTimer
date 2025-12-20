@@ -5,7 +5,7 @@ Stay focused with customizable study and break sessions, all accessible from you
 
 ## Menu Bar
 ![App Screenshot](screenshots/menu-bar.png)
-<br><br>
+<br>
 ## Notification
 ![Notifcation](screenshots/notification.png)
 
