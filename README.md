@@ -36,9 +36,9 @@ git clone https://github.com/sigmacoy/PomodoroTimer
 open PomodoroTimer.xcodeproj
 ```
 
-3. Build and run the project (Cmd + R)
+3. Build and run the project!
 
-### Setting Up the Bell Sound
+### Customizing the Bell Sound
 
 1. Add your `bell.mp3` (or `bell.MP3`) file to the project
 2. Make sure it's added to the app target
