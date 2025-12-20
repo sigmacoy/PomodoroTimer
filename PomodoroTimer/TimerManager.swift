@@ -25,9 +25,44 @@ class TimerManager: ObservableObject {
     }
     
     
+//    func start() {
+//        guard !isRunning else { return }
+//        isRunning = true
+////        print("Timer started. currentTimeRemaining: \(currentTimeRemaining)")
+//        
+//        timer = Timer.publish(every: 1, on: .main, in: .common)
+//            .autoconnect()
+//            .sink { [weak self] _ in
+//                guard let self = self else { return }
+//                self.elapsedSeconds += 1
+////                print("Tick! elapsedSeconds: \(self.elapsedSeconds), remaining: \(self.currentTimeRemaining)")
+//                
+//                if self.currentTimeRemaining <= 0 {
+//                    self.switchMode()
+//                }
+//            }
+//    }
+    
+    private func playClickSound() {
+        guard let soundURL = Bundle.main.url(forResource: "click", withExtension: "mp3") else {
+            // Try with capital MP3
+            guard let soundURL2 = Bundle.main.url(forResource: "click", withExtension: "MP3") else {
+                print("Could not find click.mp3 in bundle")
+                return
+            }
+            playURL(soundURL2)
+            return
+        }
+        playURL(soundURL)
+    }
+    
     func start() {
         guard !isRunning else { return }
         isRunning = true
+        
+        // Play click sound on start
+        playClickSound()
+        
 //        print("Timer started. currentTimeRemaining: \(currentTimeRemaining)")
         
         timer = Timer.publish(every: 1, on: .main, in: .common)
@@ -42,6 +77,7 @@ class TimerManager: ObservableObject {
                 }
             }
     }
+
     
     
     func stop() {
@@ -79,13 +115,19 @@ class TimerManager: ObservableObject {
         
     private func sendNotification() {
         let title = currentMode == .work ? "Study Time!" : "Break Time!"
-        let message = currentMode == .work ? "25 minutes focus" : "5 minutes rest"
+        let message = currentMode == .work ? "Time to focus" : "Take a rest"
         
-        // Send macOS notification
+        // Create notification content
         let content = UNMutableNotificationContent()
         content.title = title
         content.body = message
         content.sound = .default
+        
+        // IMPORTANT: Set category identifier to help macOS recognize the app
+        content.categoryIdentifier = "POMODORO_TIMER"
+        
+        // Try to force the app icon to be used
+        content.threadIdentifier = "sigmacoy.PomodoroTimer"
         
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
         let request = UNNotificationRequest(
@@ -94,7 +136,11 @@ class TimerManager: ObservableObject {
             trigger: trigger
         )
         
-        UNUserNotificationCenter.current().add(request) { _ in
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Notification error: \(error)")
+            }
+            
             // Force hide dock icon after notification
             DispatchQueue.main.async {
                 NSApp.setActivationPolicy(.accessory)
@@ -105,10 +151,23 @@ class TimerManager: ObservableObject {
         playBellSound()
     }
 
+
+//    private func playBellSound() {
+//        // Option A: If you added file to project (not Assets.xcassets)
+//        guard let soundURL = Bundle.main.url(forResource: "bell", withExtension: "mp3") else {
+//            // Try with capital MP3
+//            guard let soundURL2 = Bundle.main.url(forResource: "bell", withExtension: "MP3") else {
+//                print("Could not find bell.mp3 in bundle")
+//                return
+//            }
+//            playURL(soundURL2)
+//            return
+//        }
+//        playURL(soundURL)
+//    }
+    
     private func playBellSound() {
-        // Option A: If you added file to project (not Assets.xcassets)
         guard let soundURL = Bundle.main.url(forResource: "bell", withExtension: "mp3") else {
-            // Try with capital MP3
             guard let soundURL2 = Bundle.main.url(forResource: "bell", withExtension: "MP3") else {
                 print("Could not find bell.mp3 in bundle")
                 return
