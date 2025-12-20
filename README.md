@@ -3,7 +3,7 @@
 A minimalist menu bar Pomodoro timer built with Swift and SwiftUI for macOS. Stay focused with customizable study and break sessions, all accessible from your menu bar.
 
 ![App Screenshot](screenshots/menu-bar.png)
-<br>
+<br><br>
 ![Notifcation](screenshots/notification.png)
 
 ## Features
@@ -58,13 +58,6 @@ open PomodoroTimer.xcodeproj
 
 The timer automatically switches between modes and sends a notification when each session ends.
 
-## Screenshots
-
-Place your screenshots in the `screenshots/` folder:
-- `screenshots/menu-bar.png` - Menu bar icon showing timer
-- `screenshots/timer-running.png` - Main control panel interface
-- `screenshots/notification.png` - Notification example (optional)
-
 ## Technical Details
 
 Built with:
@@ -74,18 +67,6 @@ Built with:
 - **UserNotifications** - macOS notification system
 - **AVFoundation** - Audio playback for alerts
 - **AppKit** - Menu bar integration
-
-### Project Structure
-
-```
-PomodoroTimer/
-├── PomodoroTimerApp.swift     # App entry point & AppDelegate
-├── ContentView.swift          # Main UI
-├── TimerManager.swift         # Timer logic & state management
-├── Assets.xcassets/           # App icons and assets
-├── bell.mp3                   # Alert sound file
-└── Info.plist                 # App configuration
-```
 
 ## Configuration
 
