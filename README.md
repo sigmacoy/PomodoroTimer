@@ -26,7 +26,6 @@ A minimalist menu bar Pomodoro timer built with Swift and SwiftUI for macOS. Sta
 1. Clone this repository:
 ```bash
 git clone https://github.com/sigmacoy/PomodoroTimer
-cd pomodoro-timer
 ```
 
 2. Open the project in Xcode:
