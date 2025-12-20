@@ -3,7 +3,8 @@
 A minimalist menu bar Pomodoro timer built with Swift and SwiftUI for macOS. Stay focused with customizable study and break sessions, all accessible from your menu bar.
 
 ![App Screenshot](screenshots/menu-bar.png)
-![Timer Running](screenshots/timer-running.png)
+<br>
+![Notifcation](screenshots/notification.png)
 
 ## Features
 
