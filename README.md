@@ -11,12 +11,11 @@ Stay focused with customizable study and break sessions, all accessible from you
 
 ## Features
 
-- 🎯 **Menu Bar Integration** - Lives in your menu bar, no Dock icon clutter
-- ⏱️ **Customizable Timers** - Set your own study (15-45 min) and break times (1-15 min)
-- 🔔 **Notifications** - Get notified when it's time to study or take a break
-- 🔊 **Sound Alerts** - Bell sound plays when switching between modes
-- 🎨 **Clean Interface** - Simple, distraction-free design
-- 🚀 **Lightweight** - Minimal resource usage, stays out of your way
+- **Menu Bar Integration** - Lives in your menu bar, no Dock icon clutter
+- **Customizable Timers** - Set your own study (15-45 min) and break times (1-15 min)
+- **Notifications** - Get notified when it's time to study or take a break
+- **Sound Alerts** - Bell sound plays when switching between modes
+- **Clean Interface** - Simple, distraction-free design
 
 ## Requirements
 
@@ -83,10 +82,3 @@ The app is configured to:
 
 - Notification permission must be granted for alerts to work
 - Sound file must be named exactly `bell.mp3` or `bell.MP3`
-
-## Contributing
-
-Contributions are welcome! Feel free to:
-- Report bugs
-- Suggest new features
-- Submit pull requests
