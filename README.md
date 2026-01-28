@@ -82,3 +82,4 @@ The app is configured to:
 
 - Notification permission must be granted for alerts to work
 - Sound file must be named exactly `bell.mp3` or `bell.MP3`
+- The app icon still appears on the Dock menu bar when pressing the Banner pop up notification.
