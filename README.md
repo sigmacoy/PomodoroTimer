@@ -75,11 +75,13 @@ Built with:
 The app is configured to:
 - Hide from the Dock (`LSUIElement` = true)
 - Run as a menu bar accessory app
-- Request notification permissions on first launch
+- Request notification permissions on first launch (must be granted for alerts to work)
 - Stay hidden even when notifications are clicked
 
 ## Known Issues
+1. Sound file must be named exactly `bell.mp3` or `bell.MP3`
+2. The app icon still appears on the Dock menu bar when pressing the Banner pop up notification.
 
-- Notification permission must be granted for alerts to work
-- Sound file must be named exactly `bell.mp3` or `bell.MP3`
-- The app icon still appears on the Dock menu bar when pressing the Banner pop up notification.
+## To-Do:
+1. Fix all bugs above
+2. Add a feature for Color themes (Default and Pink for now)
